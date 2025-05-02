@@ -1,0 +1,11 @@
+20250430	23:16:56	d4562633-34d9-40a1-9cde-7ca4f61a5d64	Error: Not allowed by CORS
+20250430	23:47:49	91598864-df77-4619-a02c-5f7b48ec3519	TypeError: Cannot read properties of undefined (reading 'firstname')
+20250430	23:47:57	1ee9ecdb-49bd-428c-8f04-63dcb732adb2	TypeError: Cannot read properties of undefined (reading 'firstname')
+20250501	11:31:11	d0d6ae78-bcda-410f-85a6-308087b1d413	ReferenceError: Employee is not defined
+20250501	11:31:57	d9c48207-a208-4ed1-8ac5-70a634575a9d	ReferenceError: Employee is not defined
+20250501	11:33:02	8d79c71c-7887-4556-8056-26cfb7b318e5	ReferenceError: Employee is not defined
+20250501	11:33:05	332abf38-c1a2-4dbb-a1c3-1575feb7fd8b	ReferenceError: Employee is not defined
+20250501	11:56:20	fd4a8031-6334-48b5-9173-7114e0ce162e	ReferenceError: usersDB is not defined
+20250501	11:56:26	1b3a1751-4305-4c0f-9581-141920383cc8	ReferenceError: usersDB is not defined
+20250501	12:00:21	29515dfc-7708-4101-80e1-81b0a20a7fe9	ReferenceError: usersDB is not defined
+20250501	13:56:08	c927f8dc-0142-4781-8d26-afc5daf9bcbd	ReferenceError: personalbar is not defined
