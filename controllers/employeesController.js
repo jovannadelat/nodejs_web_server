@@ -1,65 +1,66 @@
-const data = {
-    employees: require('../model/employees.json'),
-    setEmployees: function (dataInput) {
-        this.employees = dataInput;
-    }
-};
+const Employee = require('../model/Employee');
 
 // GET all employees
-const getAllEmployees = (req, res) => {
-    res.json(data.employees);
+const getAllEmployees = async (req, res) => {
+    const employee = await Employee.find();
+    if (!employees) return res.status(204).json({'message':'No employees found.'});
+        res.json(employees);
 };
 
 // POST new employee
-const createNewEmployee = (req, res) => {
-    const newEmployee = {
-        id: data.employees.length ? data.employees[data.employees.length - 1].id + 1 : 1,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname
-    };
-
-    if (!newEmployee.firstname || !newEmployee.lastname) {
-        return res.status(400).json({ message: 'First and last names are required.' });
+const createNewEmployee = async (req, res) => {
+    if (!rew?.body?.firstname || !req?.body?.lastname) {
+        return res.status(400).json({'message': 'first and last name required'});
     }
 
-    data.setEmployees([...data.employees, newEmployee]);
-    res.status(201).json(data.employees);
+    try {
+        const result = await Employee.create({
+            firstname: req.body.firstname,
+            lastname: req.body.lastname
+        });
+        res.status(201).json(result);
+
+    } catch (err) {
+        console.error(err);
+    }
 };
 
 // PUT update employee
-const updateEmployee = (req, res) => {
-    const employee = data.employees.find(emp => emp.id === parseInt(req.body.id));
-    if (!employee) {
-        return res.status(400).json({ message: `Employee ID ${req.body.id} not found` });
+const updateEmployee = async (req, res) => {
+    if (!req?.body?.id) {
+        return res.status(400).json({'message':'ID parameter is required.'});
     }
 
-    if (req.body.firstname) employee.firstname = req.body.firstname;
-    if (req.body.lastname) employee.lastname = req.body.lastname;
+    const employee = await Employee.findOne({_id: req.body.id}).exec();
 
-    const filteredArray = data.employees.filter(emp => emp.id !== parseInt(req.body.id));
-    const updatedArray = [...filteredArray, employee].sort((a, b) => a.id - b.id);
+    if (!employee) {
+        return res.status(204).json({ message: `No employee matches ID ${req.body.id}` });
+    }
 
-    data.setEmployees(updatedArray);
-    res.json(data.employees);
+    if (req.body?.firstname) employee.firstname = req.body.firstname;
+    if (req.body?.lastname) employee.lastname = req.body.lastname;
+    const result = await employee.save();
+    res.json(result);
+
 };
 
 // DELETE employee
-const deleteEmployee = (req, res) => {
-    const employee = data.employees.find(emp => emp.id === parseInt(req.body.id));
+const deleteEmployee = async (req, res) => {
+    if(!req?.body?.id) return res.status(400).json({'message':'Employee ID required'});
+    const employee = await Employee.findOne({_id: req.body.id}).exec();
     if (!employee) {
-        return res.status(400).json({ message: `Employee ID ${req.body.id} not found` });
+        return res.status(204).json({ message: `No employee matches ID ${req.body.id}` });
     }
-
-    const filteredArray = data.employees.filter(emp => emp.id !== parseInt(req.body.id));
-    data.setEmployees(filteredArray);
-    res.json(data.employees);
+    const result = await employee.deleteOne({_id: req.body.id});
+    res.json(result);
 };
 
 // GET one employee by ID
-const getEmployee = (req, res) => {
-    const employee = data.employees.find(emp => emp.id === parseInt(req.params.id));
+const getEmployee = async (req, res) => {
+    if (!req?.param?.id)return res.status(400).json({'message':'Employee ID required'});
+    const employee = await Employee.findOne({_id: req.param.id}).exec();
     if (!employee) {
-        return res.status(400).json({ message: `Employee ID ${req.params.id} not found` });
+        return res.status(204).json({ message: `No employee matches ID ${req.body.id}` });
     }
     res.json(employee);
 };

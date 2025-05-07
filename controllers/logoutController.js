@@ -1,12 +1,4 @@
-const usersDB = {
-    users: require('../model/users.json'),
-    setUsers: function (data) {this.users = data}
-}
-
-// access current json file : replaced with mango 
-const fsPromises = require('fs').promises;
-const path = require('path');
-
+const User = require('../model/User');
 
 const handleLogout = async (req,res) => {
     // on client, also delete the access token
@@ -16,25 +8,19 @@ const handleLogout = async (req,res) => {
     const refreshToken = cookies.jwt;
 
     // is refreshToken in db
-    const foundUser = usersDB.users.find(person => person.refreshToken === refreshToken);
+    const foundUser = await User.findOne({refreshToken}).exec();
 
     if (!foundUser){
-        res.clearCookie('jwt', {httpOnly: true, maxAge: 24 * 60 * 60 * 1000});
+        res.clearCookie('jwt', {httpOnly: true, sameSite: 'None', secure: true}); // secure: true - only serves on https (in production)
         return res.sendStatus(204); // no content
     }
 
     // Delete refreshToken in db
-    const otherUsers = usersDB.users.filter(person => person.refreshToken !== foundUser.refreshToken);
-    const currentUser = {...foundUser, refreshtToken: ''};
-    usersDB.setUsers([...otherUsers, currentUser]);
+    foundUser.refreshToken = '';
+    const result = await foundUser.save();
+    console.log(result);
 
-    await fsPromises.writeFile(
-                path.join(__dirname, '..', 'model', 'users.json'),
-                JSON.stringify(usersDB.users)
-    );
-
-    res.clearCookie('jwt', {httpOnly: true, maxAge: 24 * 60 * 60 * 1000}); // secure: true - only serves on https (in production)
-
+    res.clearCookie('jwt', {httpOnly: true, sameSite: 'None', secure: true}); // secure: true - only serves on https (in production)
     res.sendStatus(204);
     
 

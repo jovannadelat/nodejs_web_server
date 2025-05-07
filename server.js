@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -6,15 +7,23 @@ const {logger} = require('./middleware/logEvents');
 const errorHandler = require('./middleware/errorHandler');
 const verifyJWT = require('./middleware/verifyJWT');
 const cookieParser = require('cookie-parser');
-const { verify } = require('crypto');
+const credentials = require('./middleware/credentials');
+const mongoose = require('mongoose');
+const connectDB = require('./config/dbConn')
 const app = express();
 const PORT = process.env.PORT || 3500;
 
+// Connect to MongoDB
+connectDB();
 
 // npm i nodemon jsonwebtoke express dotenv uuid bcrypt cookie-parser cors
 
 // custom middleware logger
 app.use(logger);
+
+// Handle options credentials check - before CORS!
+// and fetch cookies credentials requirement
+app.use(credentials);
 
 // Cross Orgin Resource Sharing
 app.use(cors(corsOptions));
@@ -56,7 +65,9 @@ app.all(/.*/, (req, res) => {
 });
 
 app.use(errorHandler)
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+mongoose.connection.once('open', () => {
+    console.log('Connected to MongoDB');
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });    
+})
