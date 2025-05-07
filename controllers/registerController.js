@@ -1,30 +1,31 @@
 const User = require('../model/User');
-// install becrypt
 const bcrypt = require('bcrypt');
 
-const handleNewUser = async (req,res) => {
-    const {user, pwd} = req.body;
-    if (!user || !pwd) return res.status(400).json({'message':'Username and passwrod are required.'});
-    // check for duplicate usernames in the db
-    const duplicate = await User.findOne({username: user}).exec();
-    if (duplicate) return res.sendStatus(409); // conflict
+const handleNewUser = async (req, res) => {
+    const { email, pwd } = req.body; // Use email instead of username
+    if (!email || !pwd) return res.status(400).json({ 'message': 'Email and password are required.' });
+
+    // Check for duplicate emails in the database
+    const duplicate = await User.findOne({ email }).exec();
+    if (duplicate) return res.sendStatus(409); // Conflict if email already exists
 
     try {
-        // encrypt the password using bcrypt
+        // Encrypt the password using bcrypt
         const hashedPwd = await bcrypt.hash(pwd, 10);
-        // create and store the new user
+
+        // Create and store the new user
         const result = await User.create({
-            "username": user, 
-            "password": hashedPwd
+            email, // Store email
+            password: hashedPwd
         });
-        
+
         console.log(result);
-        
-        res.status(201).json({'success': `New user ${user} created!`});
+
+        res.status(201).json({ 'success': `New user with email ${email} created!` });
 
     } catch (err) {
-        res.status(500).json({'message': err.message});
+        res.status(500).json({ 'message': err.message });
     }
-}
+};
 
-module.exports = {handleNewUser};
+module.exports = { handleNewUser };

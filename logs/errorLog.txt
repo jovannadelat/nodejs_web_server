@@ -10,3 +10,4 @@
 20250501	12:00:21	29515dfc-7708-4101-80e1-81b0a20a7fe9	ReferenceError: usersDB is not defined
 20250501	13:56:08	c927f8dc-0142-4781-8d26-afc5daf9bcbd	ReferenceError: personalbar is not defined
 20250503	16:15:48	29dfb6fe-cb8b-485d-aa19-6a1507e03def	Error: Cannot set headers after they are sent to the client
+20250506	22:36:28	d707b996-f09b-4997-be58-2e25a8b7e5eb	Error: Not allowed by CORS
